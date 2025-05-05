@@ -20,5 +20,7 @@ public class app {
         pacman pacmanGame = new pacman();
         frame.add(pacmanGame);
         frame.pack();
+        pacmanGame.requestFocus();
+        frame.setVisible(true);
     }
 }
