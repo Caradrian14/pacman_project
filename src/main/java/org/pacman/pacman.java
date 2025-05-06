@@ -74,20 +74,17 @@ public class pacman extends JPanel implements ActionListener, KeyListener {
                 this.velocityX = 0;
                 this.velocityY = -titleSize/4;
             }
-
-            if (this.direction == 'D') {
+            else if (this.direction == 'D') {
                 this.velocityX = 0;
-                this.velocityY = -titleSize/4;
+                this.velocityY = titleSize/4;
             }
-
-            if (this.direction == 'L') {
-                this.velocityX = 0;
-                this.velocityY = -titleSize/4;
+            else if (this.direction == 'L') {
+                this.velocityX = -titleSize/4;
+                this.velocityY = 0;
             }
-
-            if (this.direction == 'R') {
-                this.velocityX = 0;
-                this.velocityY = -titleSize/4;
+            else if (this.direction == 'R') {
+                this.velocityX = titleSize/4;
+                this.velocityY = 0;
             }
         }
     }
