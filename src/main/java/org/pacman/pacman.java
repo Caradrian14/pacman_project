@@ -15,6 +15,9 @@ public class pacman extends JPanel implements ActionListener, KeyListener {
     public void actionPerformed(ActionEvent e) {
         move();
         repaint();
+        if (gameover){
+            gameLoop.stop();
+        }
     }
 
     @Override
@@ -29,6 +32,14 @@ public class pacman extends JPanel implements ActionListener, KeyListener {
 
     @Override
     public void keyReleased(KeyEvent e) {
+        if (gameover) {
+            loadMap();
+            resetPosition();
+            lives= 3;
+            score=0;
+            gameover = false;
+            gameLoop.start();
+        }
         // System.out.println("KeyEvent: " + e.getKeyCode());
         if (e.getKeyCode() == KeyEvent.VK_UP) {
             pacman.updateDirection('U');
@@ -108,7 +119,10 @@ public class pacman extends JPanel implements ActionListener, KeyListener {
             } else if (pacman.direction == 'R') {
                 pacman.image = pacmanRigthImage;
             }
-
+        }
+        void reset() {
+            this.x = this.startX;
+            this.y = this.startY;
         }
     }
 
@@ -128,6 +142,8 @@ public class pacman extends JPanel implements ActionListener, KeyListener {
     private Image pacmanDownImage;
     private Image pacmanLeftImage;
     private Image pacmanRigthImage;
+
+    private Image foodImage;
 
     HashSet<Block> walls;
     HashSet<Block> foods;
@@ -163,7 +179,7 @@ public class pacman extends JPanel implements ActionListener, KeyListener {
     char[] directions = {'U', 'D', 'L', 'R'};
     Random random = new Random();
     int score = 0;
-    int liver = 3;
+    int lives = 3;
     boolean gameover = false;
 
     pacman() {
@@ -184,6 +200,7 @@ public class pacman extends JPanel implements ActionListener, KeyListener {
         pacmanRigthImage = new ImageIcon(getClass().getResource("/pacmanRight.png")).getImage();
         pacmanLeftImage = new ImageIcon(getClass().getResource("/pacmanLeft.png")).getImage();
 
+        foodImage = new ImageIcon(getClass().getResource("/powerFood.png")).getImage();
         loadMap();
         for (Block ghost : ghosts) {
             char newDirection = directions[random.nextInt(4)];
@@ -231,7 +248,7 @@ public class pacman extends JPanel implements ActionListener, KeyListener {
 
                 }
                 else if(titleMapChar == ' ') {//food
-                    Block food = new Block(null, x+14, y+14, 4, 4);
+                    Block food = new Block(foodImage, x+14, y+14, 4, 4);
                     foods.add(food);
                 }
             }
@@ -247,6 +264,11 @@ public class pacman extends JPanel implements ActionListener, KeyListener {
         pacman.x += pacman.velocityX;
         pacman.y += pacman.velocityY;
 
+        if (foods.isEmpty()) {
+            loadMap();
+            resetPosition();
+        }
+
         // comprueba colision muros
         for (Block wall:walls) {
             if (collision(pacman, wall)) {
@@ -258,6 +280,14 @@ public class pacman extends JPanel implements ActionListener, KeyListener {
 
         // colision fanstamita
         for (Block ghost:ghosts) {
+            if (collision(ghost, pacman)) {
+                lives-= 1;
+                if (lives == 0) {
+                    gameover = true;
+                    return;
+                }
+                resetPosition();
+            }
             if (ghost.y == titleSize*9 && ghost.direction != 'U' && ghost.direction != 'D') {
                 ghost.updateDirection('U');
             }
@@ -271,6 +301,27 @@ public class pacman extends JPanel implements ActionListener, KeyListener {
                     ghost.updateDirection(newDirection);
                 }
             }
+        }
+
+        // colision comida
+        Block foodEaten = null;
+        for (Block food : foods) {
+            if (collision(pacman, food)) {
+                foodEaten = food;
+                score += 10;
+            }
+        }
+        foods.remove(foodEaten);
+    }
+
+    public void resetPosition() {
+        pacman.reset();
+        pacman.velocityX = 0;
+        pacman.velocityY = 0;
+        for (Block ghost: ghosts) {
+            ghost.reset();
+            char newDirection = directions[random.nextInt(4)];
+            ghost.updateDirection(newDirection);
         }
     }
 
@@ -295,6 +346,14 @@ public class pacman extends JPanel implements ActionListener, KeyListener {
         g.setColor(Color.WHITE);
         for (Block food: foods){
             g.drawImage(food.image, food.x, food.y, food.width, food.heigth, null);
+        }
+
+        //score
+        g.setFont(new Font("Arial", Font.PLAIN, 18));
+        if(gameover) {
+            g.drawString("Game Over:" +  String.valueOf(score), titleSize/2, titleSize/2);
+        } else {
+            g.drawString("x" + String.valueOf(lives) + " Score: " + String.valueOf(score), titleSize/2, titleSize/2);
         }
     }
 }
