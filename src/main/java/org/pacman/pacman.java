@@ -303,6 +303,15 @@ public class pacman extends JPanel implements ActionListener, KeyListener {
             }
         }
 
+        //Salimos del mapa y volvemos  aentrar al mapa por el otro lado
+        //detectados que el pacman se ha salido del mapa
+        if (pacman.x > boardWeight) {
+            pacman.x = 0;
+        }
+        else if (pacman.x < 0) {
+            pacman.x = pacman.startX *2;
+        }
+
         // colision comida
         Block foodEaten = null;
         for (Block food : foods) {
