@@ -182,7 +182,7 @@ public class pacman extends JPanel implements ActionListener, KeyListener {
     char[] directions = {'U', 'D', 'L', 'R'};
     Random random = new Random();
     int score = 0;
-    boolean superPowerActuvated = false;
+    boolean superPowerActivated = false;
     int lives = 3;
     boolean gameover = false;
 
@@ -287,12 +287,17 @@ public class pacman extends JPanel implements ActionListener, KeyListener {
         // colision fanstamita
         for (Block ghost:ghosts) {
             if (collision(ghost, pacman)) {
-                lives-= 1;
-                if (lives == 0) {
-                    gameover = true;
-                    return;
+                if (superPowerActivated) {
+                    // no basta con eliminarlos hace falta hacer algo mas
+                    ghosts.remove(ghost);
+                } else {
+                    lives-= 1;
+                    if (lives == 0) {
+                        gameover = true;
+                        return;
+                    }
+                    resetPosition();
                 }
-                resetPosition();
             }
             if (ghost.y == titleSize*9 && ghost.direction != 'U' && ghost.direction != 'D') {
                 ghost.updateDirection('U');
@@ -377,7 +382,7 @@ public class pacman extends JPanel implements ActionListener, KeyListener {
     }
 
     public void activationSuperPower () {
-        superPowerActuvated = true;
+        superPowerActivated = true;
         // ghost blues
         for (Block ghost : ghosts) {
             ghost.image = scaredGhostimage;
