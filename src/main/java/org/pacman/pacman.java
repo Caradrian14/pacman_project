@@ -139,6 +139,8 @@ public class pacman extends JPanel implements ActionListener, KeyListener {
     private Image pinkGhostimage;
     private Image redGhostimage;
 
+    private Image scaredGhostimage;
+
     private Image pacmanUpImage;
     private Image pacmanDownImage;
     private Image pacmanLeftImage;
@@ -196,6 +198,8 @@ public class pacman extends JPanel implements ActionListener, KeyListener {
         orangeGhostimage = new ImageIcon(getClass().getResource("/orangeGhost.png")).getImage();
         pinkGhostimage = new ImageIcon(getClass().getResource("/pinkGhost.png")).getImage();
         redGhostimage = new ImageIcon(getClass().getResource("/redGhost.png")).getImage();
+
+        scaredGhostimage = new ImageIcon(getClass().getResource("/scaredGhost.png")).getImage();
 
         pacmanUpImage = new ImageIcon(getClass().getResource("/pacmanUp.png")).getImage();
         pacmanDownImage = new ImageIcon(getClass().getResource("/pacmanDown.png")).getImage();
@@ -373,7 +377,11 @@ public class pacman extends JPanel implements ActionListener, KeyListener {
     }
 
     public void activationSuperPower () {
+        superPowerActuvated = true;
         // ghost blues
+        for (Block ghost : ghosts) {
+            ghost.image = scaredGhostimage;
+        }
         // ghost can be eaten
         // temporizador
     }
