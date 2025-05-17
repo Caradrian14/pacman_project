@@ -129,6 +129,7 @@ public class pacman extends JPanel implements ActionListener, KeyListener {
     private int rowCount = 21;
     private int columnCount =  19;
     private int titleSize = 32;
+    private int scoreSuperPower = 400;
     private int boardWeight = columnCount * titleSize;
     private int boardHeight = rowCount * titleSize;
 
@@ -179,6 +180,7 @@ public class pacman extends JPanel implements ActionListener, KeyListener {
     char[] directions = {'U', 'D', 'L', 'R'};
     Random random = new Random();
     int score = 0;
+    boolean superPowerActuvated = false;
     int lives = 3;
     boolean gameover = false;
 
@@ -318,6 +320,10 @@ public class pacman extends JPanel implements ActionListener, KeyListener {
             if (collision(pacman, food)) {
                 foodEaten = food;
                 score += 10;
+                if (score >= scoreSuperPower) {
+                    // activate super power en funcion
+                    activationSuperPower();
+                }
             }
         }
         foods.remove(foodEaten);
@@ -364,5 +370,11 @@ public class pacman extends JPanel implements ActionListener, KeyListener {
         } else {
             g.drawString("x" + String.valueOf(lives) + " Score: " + String.valueOf(score), titleSize/2, titleSize/2);
         }
+    }
+
+    public void activationSuperPower () {
+        // ghost blues
+        // ghost can be eaten
+        // temporizador
     }
 }
