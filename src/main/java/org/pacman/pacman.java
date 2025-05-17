@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Random;
 import javax.swing.*;
 
@@ -285,13 +286,17 @@ public class pacman extends JPanel implements ActionListener, KeyListener {
         }
 
         // colision fanstamita
-        for (Block ghost:ghosts) {
+        Iterator<Block> iterator = ghosts.iterator();
+        while (iterator.hasNext()) {
+            Block ghost = iterator.next();
+
             if (collision(ghost, pacman)) {
                 if (superPowerActivated) {
-                    // no basta con eliminarlos hace falta hacer algo mas
-                    ghosts.remove(ghost);
+                    // Eliminar el fantasma de la lista usando el iterador
+                    iterator.remove();
+                    continue; // Saltar al siguiente elemento en el iterador
                 } else {
-                    lives-= 1;
+                    lives -= 1;
                     if (lives == 0) {
                         gameover = true;
                         return;
@@ -299,13 +304,13 @@ public class pacman extends JPanel implements ActionListener, KeyListener {
                     resetPosition();
                 }
             }
-            if (ghost.y == titleSize*9 && ghost.direction != 'U' && ghost.direction != 'D') {
+            if (ghost.y == titleSize * 9 && ghost.direction != 'U' && ghost.direction != 'D') {
                 ghost.updateDirection('U');
             }
             ghost.x += ghost.velocityX;
             ghost.y += ghost.velocityY;
             for (Block wall:walls) {
-                if (collision(ghost, wall) || ghost.x + ghost.width >= boardWeight || ghost.x <=0) {
+                if (collision(ghost, wall) || ghost.x + ghost.width >= boardWeight || ghost.x <= 0) {
                     ghost.x -= ghost.velocityX;
                     ghost.y -= ghost.velocityY;
                     char newDirection = directions[random.nextInt(4)];
